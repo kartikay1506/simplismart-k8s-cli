@@ -90,7 +90,7 @@ def create_service(args):
     try:
         core_client = client.CoreV1Api()
         ports = [port.strip("") for port in args.ports.split(",")]
-        service_ports = [client.V1ServicePort(port=port, target_port=port) for port in ports]
+        service_ports = [client.V1ServicePort(port=int(port), target_port=int(port)) for port in ports]
         service_spec = client.V1Service(
             metadata=client.V1ObjectMeta(name=f"{args.name}-service", namespace=args.namespace),
             spec=client.V1ServiceSpec(
@@ -145,7 +145,7 @@ def create_deployment(args):
         )
 
         # Apply Deployment
-        apps_client.create_namespaced_deployment(namespace=args.namespace, body=deployment_spec)
+        # apps_client.create_namespaced_deployment(namespace=args.namespace, body=deployment_spec)
         print("Deployment {} created successfully in namespace {}\n".format(args.name, args.namespace))
         subprocess.run(["kubectl", "get", "deployment", "{}".format(args.name), "-n", "{}".format(args.namespace)], check=True)
 
