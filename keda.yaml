@@ -3,11 +3,10 @@ kind: ScaledObject
 metadata:
   name: <name>
   namespace: <namespace>
-  spec:
-      scaleTargetRef:
-        name: <target_reference>
-      triggers:
-      - type: <even source type>
-        metricType: <metric_type>
-        metadata:
-          <event source metadata>
+spec:
+    scaleTargetRef:
+      name: <target_reference>
+    triggers:
+    - type: <even source type>
+      metadata:
+        <event source metadata>
