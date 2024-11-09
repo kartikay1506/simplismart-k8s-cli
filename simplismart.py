@@ -116,7 +116,7 @@ def create_deployment(args):
 
         ports = [port.strip("") for port in args.ports.split(",")]
 
-        container_ports = [client.V1ContainerPort(container_port=port) for port in ports]
+        container_ports = [client.V1ContainerPort(container_port=int(port)) for port in ports]
 
         container_list = [
             client.V1Container(
@@ -238,7 +238,6 @@ def main():
 
     # 'install' operation with its own positional and optional arguments
     install_parser = subparsers.add_parser("install", help="Install tools on the kubernetes cluster.")
-    # install_parser.add_argument("tool", help="Tool that you want to install on the cluster")
     install_parser.add_argument("-c", "--chart", help="Helm chart name for the tool to be installed", required=True)
     install_parser.add_argument("-r", "--repo", help="Repo link for the helm chart", required=True)
     install_parser.add_argument("-n", "--namespace", default="default", help="namespace for the tool to be installed in.")
