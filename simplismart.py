@@ -145,7 +145,7 @@ def create_deployment(args):
         )
 
         # Apply Deployment
-        # apps_client.create_namespaced_deployment(namespace=args.namespace, body=deployment_spec)
+        apps_client.create_namespaced_deployment(namespace=args.namespace, body=deployment_spec)
         print("Deployment {} created successfully in namespace {}\n".format(args.name, args.namespace))
         subprocess.run(["kubectl", "get", "deployment", "{}".format(args.name), "-n", "{}".format(args.namespace)], check=True)
 
@@ -169,21 +169,20 @@ def setup_autoscaler(args):
 
         keda_yaml["metadata"]["name"] = args.name + "-autoscaler"
         keda_yaml["metadata"]["namespace"] = args.namespace
-        keda_yaml["metadata"]["spec"]["scaleTargetRef"]["name"] = args.name
+        keda_yaml["spec"]["scaleTargetRef"]["name"] = args.name
 
         args.event_source = json.loads(args.event_source)
-        for trigger in keda_yaml["metadata"]["spec"]["triggers"]:
+        for trigger in keda_yaml["spec"]["triggers"]:
             trigger["type"] = args.event_source["type"]
-            trigger["metricType"] = args.event_source["metricType"]
             trigger["metadata"] = args.event_source["metadata"]
 
-        subprocess.run(["kubectl", "apply", "-f", "-"], input=keda_yaml.encode())
+        subprocess.run(["kubectl", "apply", "-f", "-"], input=json.dumps(keda_yaml).encode(), check=True)
         print("KEDA Scaled Object for {} created.".format(args.name))
 
     except Exception as e:
-        print("Exception caught: {}".format(e))
+        raise Exception("Exception caught: {}".format(e))
     except subprocess.CalledProcessError as e:
-        print("Exception caught: {}".format(e))
+        raise Exception("Exception caught: {}".format(e))
 
 
 def get_deployment_health_status(args):
@@ -269,7 +268,8 @@ def main():
     elif args.operation == "install":
         install_tools(args)
     elif args.operation == "create":
-        create_deployment(args)
+        # create_deployment(args)
+        setup_autoscaler(args)
     elif args.operation == "health-status":
         get_deployment_health_status(args)
     else:
