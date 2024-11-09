@@ -268,8 +268,7 @@ def main():
     elif args.operation == "install":
         install_tools(args)
     elif args.operation == "create":
-        # create_deployment(args)
-        setup_autoscaler(args)
+        create_deployment(args)
     elif args.operation == "health-status":
         get_deployment_health_status(args)
     else:
