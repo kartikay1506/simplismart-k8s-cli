@@ -196,7 +196,6 @@ def get_deployment_health_status(args):
     # Get the deployment status
     try:
         deployment = app_client.read_namespaced_deployment(args.deployment, args.namespace)
-        # deployment_events = core_client.list_namespaced_event(args.namespace, field_selector="involvedObject.name={}".format(args.deployment))
         replicas = deployment.status.replicas
         ready_replicas = deployment.status.ready_replicas
 
